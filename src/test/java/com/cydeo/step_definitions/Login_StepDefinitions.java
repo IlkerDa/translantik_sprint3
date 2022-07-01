@@ -14,20 +14,15 @@ public class Login_StepDefinitions {
     @Given("user is on the login page")
     public void user_is_on_the_login_page() {
         Driver.getDriver().get(ConfigurationReader.getProperty("url"));
-    }
-
-    @When("the user enters valid credentials for each {string}")
-    public void the_user_enters_valid_credentials_for_each(String userType) {
-      loginPage.enteringValidCredentials(userType);
-    }
-
-    @When("the user clicks login button")
-    public void the_user_clicks_login_button() {
-        loginPage.loginButton.click();
 
     }
-    @Then("the page subtitle is {string}")
-    public void the_page_subtitle_is(String string) {
+    @When("User enters valid credentials for {string} and login")
+    public void user_enters_valid_credentials_for_and_login(String userType) {
+       loginPage.login(userType);
+    }
+
+    @Then("{string} should land on {string} and verify the {string} {string} {string} {string}")
+    public void should_land_on_and_verify_the(String string, String string2, String string3, String string4, String string5, String string6) {
 
     }
 
