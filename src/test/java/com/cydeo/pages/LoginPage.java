@@ -1,5 +1,6 @@
 package com.cydeo.pages;
 
+import com.cydeo.utilities.ConfigurationReader;
 import com.cydeo.utilities.Driver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -24,14 +25,23 @@ public class LoginPage {
     /**
      * This method will accept two arguments and login.
      *
-     * @param username
-     * @param password
+     * @param userType
+
      */
-    public void login(String username, String password) {
-        inputUsername.sendKeys(username);
-        inputPassword.sendKeys(password);
+    public void login(String userType) {
+        if(userType.equalsIgnoreCase("driver")){
+            inputUsername.sendKeys(ConfigurationReader.getProperty("driver_username"));
+            inputPassword.sendKeys(ConfigurationReader.getProperty("sales_manager_password"));
+        }else if (userType.equalsIgnoreCase("sales manager")){
+            inputUsername.sendKeys(ConfigurationReader.getProperty("sales_manager_username"));
+            inputPassword.sendKeys(ConfigurationReader.getProperty("sales_manager_password"));
+        }else if (userType.equalsIgnoreCase("store manager")){
+            inputUsername.sendKeys(ConfigurationReader.getProperty("store_manager_username"));
+            inputPassword.sendKeys(ConfigurationReader.getProperty("store_manager_password"));
+        }
         loginButton.click();
     }
+
 
 
 }
