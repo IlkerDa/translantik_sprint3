@@ -68,29 +68,75 @@ public class Login_StepDefinitions {
     @And("user copies the current url")
     public String getTheCurrentUrl() {
         String urlLandingPage = Driver.getDriver().getCurrentUrl();
-       return urlLandingPage;
+      return urlLandingPage;
     }
     @And("user closes browser without logging out")
     public void userClosesBrowserWithoutLoggingOut() {
-        Driver.closeDriver();
+       Driver.closeDriver();
+        BrowserUtils.sleep(2);
     }
 
     @And("user opens a new empty tab and pastes the previous url")
     public void userOpensANewEmptyTabAndPastesThePreviousUrl() {
-        BrowserUtils.waitForVisibility(loginPage.loginButton,10);
+
      Driver.getDriver().get(getTheCurrentUrl());
     }
 
     @Then("the user shouldn't able to access application without logging in")
     public void theUserShouldnTAbleToAccessApplicationWithoutLoggingIn() {
-        String oldUrl = getTheCurrentUrl();
+        String oldUrl = ConfigurationReader.getProperty("url_after_login");
         String newUrl = Driver.getDriver().getCurrentUrl();
-        Assert.assertTrue(!(oldUrl.equals(newUrl)));
+        Assert.assertFalse(oldUrl.equals(newUrl));
 
     }
 
 
+    @When("user as {string} enters trimmed username with correct password")
+    public void userAsEntersTrimmedUsernameWithCorrectPassword(String userType) {
+        loginPage.loginWithLeadingAndTrailingSpacesUsername(userType);
+    }
 
+    @Then("user should log in application")
+    public void userShouldLogInApplication() {
+        String oldUrl = ConfigurationReader.getProperty("url_after_login");
+        String newUrl = Driver.getDriver().getCurrentUrl();
+        Assert.assertTrue(oldUrl.equals(newUrl));
+    }
+
+    @Then("Verify the {string} and {string} placeholders are present")
+    public void verifyTheAndPlaceholdersArePresent(String Username, String Password) {
+        String placeholderUsernameText = loginPage.placeholderUsername.getAttribute("placeholder");
+        String placeholderPasswordText = loginPage.placeholderPassword.getAttribute("placeholder");
+        Assert.assertEquals(Username,placeholderUsernameText);
+        Assert.assertEquals(Password,placeholderPasswordText);
+    }
+
+    @When("user enters invalid credentials {string} and {string}")
+    public void userEntersInvalidCredentialsAnd(String Username, String Password) {
+        loginPage.login(Username,Password);
+
+    }
+
+    @Then("{string} should be displayed.")
+    public void shouldBeDisplayed(String WarningMessage) {
+        String actualWarningMessageText = loginPage.warningMessage.getText();
+        Assert.assertEquals(WarningMessage,actualWarningMessageText);
+    }
+
+
+
+    @When("user enters empty credentials in placeholder of {string} and or {string}")
+    public void userEntersEmptyCredentials(String Username, String Password) {
+        loginPage.login(Username, Password);
+    }
+
+    @Then("{string} should be displayed in the empty field")
+    public void shouldBeDisplayedInTheEmptyField(String expectedWarningMessage) {
+        BrowserUtils.sleep(1);
+        String actualWarningMessage= loginPage.placeholderUsername.getAttribute("required");
+        System.out.println(actualWarningMessage);
+
+    }
 }
 
 

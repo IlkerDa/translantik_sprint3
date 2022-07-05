@@ -12,9 +12,10 @@ import org.junit.runner.RunWith;
                 "json:target/cucumber.json"
         },
         features = "src/test/resources/features",
-        glue = "src/test/java/com/cydeo/step_definitions",
-        dryRun = true,
-        tags = "@wip"
+        glue = "com/cydeo/step_definitions",
+        dryRun = false,
+        publish = false,
+        tags = "@ac3"
 )
 public class CukesRunner {
 }

@@ -39,14 +39,20 @@ Feature: User account tests
     Then the user shouldn't able to access application without logging in
 
     Examples:
-      | userType     |
-      | driver       |
-      #| storemanager |
-      #| salesmanager |
+      | userType      |
+      | driver        |
+      | store manager |
+      | sales manager |
 
-
-
-
+  @ac4
+  Scenario Outline: Validate whether the leading and trailing spaces entered into the Username field are trimmed
+    When user as "<userType>" enters trimmed username with correct password
+    Then user should log in application
+    Examples:
+      | userType      |
+      | driver        |
+      | store manager |
+      | sales manager |
   #3- Validate Logging into the Application, closing the Browser without logging out,
   # and opening the application in the new Browser/TAB again(optional)
   #   * After logging into the APP, copy the URL, close the browser,and
@@ -56,3 +62,30 @@ Feature: User account tests
   #   * After logging into the App, copy the URL, open a new TAB,
   #   close the previous TAB and then paste the URL.
   #   This time we should see the Dashboard Page.
+  @ac5
+  Scenario Outline: Validate all the fields in the Login page have the proper placeholders (Username or Email and Password)
+    Then Verify the "<Username>" and "<Password>" placeholders are present
+    Examples:
+      | Username          | Password |
+      | Username or Email | Password |
+
+  @ac6_1
+  Scenario Outline: Warning Messages should be displayed
+    When user enters invalid credentials "<Username>" and "<Password>"
+    Then "<Warning Messages>" should be displayed.
+
+    Examples:
+      | Username | Password    | Warning Messages               |
+      | user4444 | UserUser123 | Invalid user name or password. |
+      | user4    | UserUser    | Invalid user name or password. |
+
+  @ac6_2
+  Scenario Outline: Leave fields as empty
+    When user enters empty credentials in placeholder of "<Username>" and or "<Password>"
+    Then "<Warning Messages>" should be displayed in the empty field
+
+    Examples:
+      | Username | Password    | Warning Messages            |
+      |          | UserUser123 | Please fill out this field. |
+      | user4    |             | Please fill out this field. |
+      |          |             | Please fill out this field. |

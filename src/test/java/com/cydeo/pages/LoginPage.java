@@ -20,6 +20,14 @@ public class LoginPage {
     @FindBy(id = "_submit")
     public WebElement loginButton;
 
+    @FindBy(xpath = "//input[@placeholder='Username or Email']")
+    public WebElement placeholderUsername;
+
+    @FindBy(xpath = "//input[@placeholder='Password']")
+    public WebElement placeholderPassword;
+
+    @FindBy(xpath = "//div[text()='Invalid user name or password.']")
+    public WebElement warningMessage;
 
 
     /**
@@ -42,6 +50,25 @@ public class LoginPage {
         loginButton.click();
     }
 
+    public void login(String Username, String Password){
+        inputUsername.sendKeys(Username);
+        inputPassword.sendKeys(Password);
+        loginButton.click();
+    }
 
+    public void loginWithLeadingAndTrailingSpacesUsername(String userType) {
+        if(userType.equalsIgnoreCase("driver")) {
+            inputUsername.sendKeys("     "+ConfigurationReader.getProperty("driver_username")+"     ");
+
+            inputPassword.sendKeys(ConfigurationReader.getProperty("sales_manager_password"));
+        }else if (userType.equalsIgnoreCase("sales manager")){
+            inputUsername.sendKeys("     "+ConfigurationReader.getProperty("sales_manager_username")+"     ");
+            inputPassword.sendKeys(ConfigurationReader.getProperty("sales_manager_password"));
+        }else if (userType.equalsIgnoreCase("store manager")){
+            inputUsername.sendKeys("     "+ConfigurationReader.getProperty("store_manager_username")+"     ");
+            inputPassword.sendKeys(ConfigurationReader.getProperty("store_manager_password"));
+        }
+        loginButton.click();
+    }
 
 }
