@@ -89,3 +89,19 @@ Feature: User account tests
       |          | UserUser123 | Please fill out this field. |
       | user4    |             | Please fill out this field. |
       |          |             | Please fill out this field. |
+
+  @ac7
+  Scenario: the 'Password' field is toggled to hide its visibility
+    When user enters valid credentials "user4" and "UserUser123"
+    Then the password field is toggled to hide its visibility
+
+  @ac8
+  Scenario Outline: Password is not visible in the Page Source
+    Given user enters valid credentials for "<userType>" without login
+    Then password should not be displayed in the page source
+
+    Examples:
+      | userType      |
+      | driver        |
+      | sales manager |
+      | store manager |

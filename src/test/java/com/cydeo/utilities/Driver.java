@@ -10,6 +10,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Driver {
@@ -55,6 +57,24 @@ public class Driver {
                     driverPool.get().manage().window().maximize();
                     driverPool.get().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
                     break;
+
+                // to disable of the Chrome notifications that might pop up in our browser
+                case "chrome_notification_handled":
+                    WebDriverManager.chromedriver().setup();
+                    // Create a map to store  preferences
+                    Map<String, Object> prefs = new HashMap<String, Object>();
+                    // add key and value to map as follow to switch off browser notification
+                    // Pass the argument 1 to allow and 2 to block
+                    // 1-Allow, 2-Block, 0-default
+                    prefs.put("profile.default_content_setting_values.notifications", 2);
+                    //Create an instance of ChromeOptions
+                    ChromeOptions options = new ChromeOptions();
+                    // set ExperimentalOption - prefs
+                    options.setExperimentalOption("prefs", prefs);
+                    //Now Pass ChromeOptions instance to ChromeDriver Constructor to initialize chrome driver
+                    // which will switch off this browser notification on the chrome browser
+                    driverPool.set(new ChromeDriver(options));
+                    break;
                 case "firefox":
                     WebDriverManager.firefoxdriver().setup();
                     driverPool.set(new FirefoxDriver());
@@ -78,7 +98,6 @@ public class Driver {
 
             }
         }
-
         return driverPool.get();
 
     }
