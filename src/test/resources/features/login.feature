@@ -105,3 +105,6 @@ Feature: User account tests
       | driver        |
       | sales manager |
       | store manager |
+
+  Scenario: the copying of the text entered into the Password field
+    Then user shouldn't copy the password

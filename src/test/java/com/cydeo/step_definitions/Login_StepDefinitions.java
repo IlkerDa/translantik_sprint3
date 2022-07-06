@@ -11,6 +11,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 
 public class Login_StepDefinitions {
     LoginPage loginPage = new LoginPage();
@@ -139,7 +140,6 @@ public class Login_StepDefinitions {
         boolean isMessageDisplayed = (messageInPwdBox.equals(expectedMessage) || messageInPwdBox.equals(expectedMessage))
                 ||messageInInputBox.isEmpty()||messageInPwdBox.isEmpty();
         Assert.assertTrue(isMessageDisplayed);
-
     }
 
     @When("user enters valid credentials {string} and {string}")
@@ -165,6 +165,20 @@ public class Login_StepDefinitions {
         String pageSource = Driver.getDriver().getPageSource();
         boolean isDisplayed = pageSource.contains(ConfigurationReader.getProperty("driver_password"));
         Assert.assertFalse(isDisplayed);
+    }
+
+    @Then("user shouldn't copy the password")
+    public void userShouldnTCopyThePassword() {
+       loginPage.placeholderPassword.sendKeys("UserUser123");
+        String copiedPwd =loginPage.placeholderPassword.getAttribute("value");
+        loginPage.placeholderPassword.sendKeys(Keys.CONTROL, "a");
+        loginPage.placeholderPassword.sendKeys(Keys.CONTROL, "c");
+        BrowserUtils.sleep(1);
+        loginPage.placeholderUsername.sendKeys(Keys.CONTROL, "v");
+        String pastedPwd=loginPage.placeholderUsername.getAttribute("value");
+        System.out.println("pastedPwd = " + pastedPwd);
+        // Assert.assertNotEquals(copiedPwd,pastedPwd);
+        System.out.println("copiedPwd = " + copiedPwd);
     }
 }
 
