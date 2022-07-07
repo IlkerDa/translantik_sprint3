@@ -29,7 +29,13 @@ public class LoginPage extends BasePage {
     @FindBy(xpath = "//div[text()='Invalid user name or password.']")
     public WebElement warningMessage;
 
-   // <input type="password" id="prependedInput2" class="span2" name="_password" required="required" placeholder="Password" autocomplete="off">
+    @FindBy(xpath = "//a[.='Forgot your password?']")
+    public WebElement forgotPasswordLink;
+
+    @FindBy(className = "custom-checkbox__text")
+    public WebElement rememberMeLink;
+
+
 
 
     /**

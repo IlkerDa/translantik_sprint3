@@ -1,5 +1,6 @@
 package com.cydeo.step_definitions;
 
+import com.cydeo.pages.ForgotPasswordPage;
 import com.cydeo.pages.HomePage;
 import com.cydeo.pages.LoginPage;
 import com.cydeo.utilities.BrowserUtils;
@@ -13,9 +14,15 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+
 public class Login_StepDefinitions {
     LoginPage loginPage = new LoginPage();
     HomePage homePage = new HomePage();
+    ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage();
 
 
     @Given("the user is on the login page")
@@ -168,17 +175,48 @@ public class Login_StepDefinitions {
     }
 
     @Then("user shouldn't copy the password")
-    public void userShouldnTCopyThePassword() {
-       loginPage.placeholderPassword.sendKeys("UserUser123");
-        String copiedPwd =loginPage.placeholderPassword.getAttribute("value");
-        loginPage.placeholderPassword.sendKeys(Keys.CONTROL, "a");
-        loginPage.placeholderPassword.sendKeys(Keys.CONTROL, "c");
-        BrowserUtils.sleep(1);
-        loginPage.placeholderUsername.sendKeys(Keys.CONTROL, "v");
-        String pastedPwd=loginPage.placeholderUsername.getAttribute("value");
-        System.out.println("pastedPwd = " + pastedPwd);
-        // Assert.assertNotEquals(copiedPwd,pastedPwd);
-        System.out.println("copiedPwd = " + copiedPwd);
+    public void userShouldnTCopyThePassword() throws IOException, UnsupportedFlavorException {
+        loginPage.inputPassword.sendKeys("UserUser123");
+        loginPage.placeholderPassword.sendKeys(Keys.chord(Keys.CONTROL, "A"));
+        loginPage.placeholderPassword.sendKeys(Keys.chord(Keys.CONTROL, "C"));
+        String localClipboardData = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        Assert.assertNotEquals("UserUser123", localClipboardData);
+    }
+
+    @When("user clicks Forgot your password link")
+    public void userClicksForgotYourPasswordLink() {
+        loginPage.forgotPasswordLink.click();
+        BrowserUtils.waitForVisibility(forgotPasswordPage.forgotPasswordBox,3);
+    }
+
+    @And("user lands on {string} page")
+    public void userLandsOnPage(String expectedURL) {
+       String actualURL=Driver.getDriver().getCurrentUrl();
+       Assert.assertEquals(expectedURL,actualURL);
+    }
+
+    @Then("user changed own password as {string}")
+    public void userChangedOwnPasswordAs(String username) {
+        forgotPasswordPage.forgotPasswordBox.sendKeys(username);
+        forgotPasswordPage.requestButton.click();
+        Assert.assertNotNull(forgotPasswordPage.alertMessage);
+    }
+
+
+
+
+    @When("user sees {string} link")
+    public void userSeesLink(String link) {
+        Assert.assertEquals(link, loginPage.rememberMeLink.getText());
+        System.out.println("loginPage.rememberMeLink.getText() = " + loginPage.rememberMeLink.getText());
+    }
+
+    @Then("the link should be clickable")
+    public void theLinkShouldBeClickable() {
+        BrowserUtils.sleep(2);
+        loginPage.rememberMeLink.click();
+        BrowserUtils.sleep(2);
+        Assert.assertTrue(loginPage.rememberMeLink.isEnabled());
     }
 }
 
