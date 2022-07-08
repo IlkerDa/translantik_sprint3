@@ -2,14 +2,14 @@ Feature: User account tests
   As a user, I should be able to login with different users using their correct usernames and passwords.
 
   Background: Go to login page of Translantik
-    Given the user is on the login page
+    Given user is on the login page
 
   @ac1
   Scenario Outline: Login as different users
 
-    When the user enters valid credentials for "<userType>"
-    And the user lands on "<mainPage>"
-    Then the user should see "<breadcrumb>", "<pageHeading>", "<pageURL>", "<pageTitle>" of Dashboard Page properly
+    When user enters valid credentials for "<userType>"
+    And user lands on "<mainPage>"
+    Then user should see "<breadcrumb>", "<pageHeading>", "<pageURL>", "<pageTitle>" of Dashboard Page properly
 
     Examples:
       | userType      | mainPage        | breadcrumb            | pageHeading     | pageURL            | pageTitle |
@@ -20,8 +20,8 @@ Feature: User account tests
 
   @ac2
   Scenario Outline: Repeat login function after logout
-    Given the user enters valid credentials for "<userType>"
-    And the user copies current URL and log out and paste the same URL to the browser
+    Given user enters valid credentials for "<userType>"
+    And user copies current URL and log out and paste the same URL to the browser
     Then system shouldn't allow users to access the application
     Examples:
       | userType      |
@@ -36,7 +36,7 @@ Feature: User account tests
     And user copies the current url
     And user closes browser without logging out
     And user opens a new empty tab and pastes the previous url
-    Then the user shouldn't able to access application without logging in
+    Then user shouldn't able to access application without logging in
 
     Examples:
       | userType      |
@@ -64,7 +64,7 @@ Feature: User account tests
   #   This time we should see the Dashboard Page.
   @ac5
   Scenario Outline: Validate all the fields in the Login page have the proper placeholders (Username or Email and Password)
-    Then Verify the "<Username>" and "<Password>" placeholders are present
+    Then the "<Username>" and "<Password>" placeholders should be present
     Examples:
       | Username          | Password |
       | Username or Email | Password |

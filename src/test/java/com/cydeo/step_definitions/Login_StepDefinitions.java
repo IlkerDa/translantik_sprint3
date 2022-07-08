@@ -27,23 +27,24 @@ public class Login_StepDefinitions {
     ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage();
 
 
-    @Given("the user is on the login page")
-    public void the_user_is_on_the_login_page() {
+    @Given("user is on the login page")
+    public void user_is_on_the_login_page() {
         Driver.getDriver().get(ConfigurationReader.getProperty("url"));
     }
 
-    @When("the user enters valid credentials for {string}")
-    public void the_user_enters_valid_credentials_for(String userType) {
+    @When("user enters valid credentials for {string}")
+    public void user_enters_valid_credentials_for(String userType) {
         loginPage.login(userType);
+        BrowserUtils.waitForPageToLoad(5);
     }
 
-    @And("the user lands on {string}")
+    @And("user lands on {string}")
     public void theUserLandsOn(String expectedText) {
         BrowserUtils.waitForVisibility(homePage.pageHeading, 5);
         Assert.assertEquals(expectedText, homePage.pageHeading.getText());
     }
 
-    @Then("the user should see {string}, {string}, {string}, {string} of Dashboard Page properly")
+    @Then("user should see {string}, {string}, {string}, {string} of Dashboard Page properly")
     public void theUserShouldSeeOfDashboardPageProperly(String breadcrumb, String pageHeading, String url, String title) {
         Assert.assertEquals(breadcrumb, homePage.breadcrumb.getText());
         Assert.assertEquals(pageHeading, homePage.pageHeading.getText());
@@ -52,19 +53,17 @@ public class Login_StepDefinitions {
     }
 
 
-    @And("the user copies current URL and log out and paste the same URL to the browser")
+    @And("user copies current URL and log out and paste the same URL to the browser")
     public void theUserCopiesCurrentURLAndLogOutAndPasteTheSameURLToTheBrowser() {
-        BrowserUtils.waitForClickablility(homePage.userMenu, 10);
         String urlAfterLogin = Driver.getDriver().getCurrentUrl();
-        BrowserUtils.waitForClickablility(homePage.userMenu, 10);
         homePage.logut();
-        BrowserUtils.sleep(2);
+        BrowserUtils.waitForPageToLoad(5);
         Driver.getDriver().get(urlAfterLogin);
+        BrowserUtils.waitForPageToLoad(5);
     }
 
     @Then("system shouldn't allow users to access the application")
     public void systemShouldnTAllowUsersToAccessTheApplication() {
-        BrowserUtils.sleep(1);
         String expectedURL = ConfigurationReader.getProperty("url");
         String actualURL = Driver.getDriver().getCurrentUrl();
         Assert.assertEquals(expectedURL, actualURL);
@@ -94,8 +93,8 @@ public class Login_StepDefinitions {
         Driver.getDriver().get(getTheCurrentUrl());
     }
 
-    @Then("the user shouldn't able to access application without logging in")
-    public void theUserShouldnTAbleToAccessApplicationWithoutLoggingIn() {
+    @Then("user shouldn't able to access application without logging in")
+    public void userShouldnTAbleToAccessApplicationWithoutLoggingIn() {
         String oldUrl = ConfigurationReader.getProperty("url_after_login");
         String newUrl = Driver.getDriver().getCurrentUrl();
         Assert.assertFalse(oldUrl.equals(newUrl));
@@ -115,13 +114,14 @@ public class Login_StepDefinitions {
         Assert.assertTrue(oldUrl.equals(newUrl));
     }
 
-    @Then("Verify the {string} and {string} placeholders are present")
-    public void verifyTheAndPlaceholdersArePresent(String Username, String Password) {
+    @Then("the {string} and {string} placeholders should be present")
+    public void theAndPlaceholdersShouldBePresent(String Username, String Password) {
         String placeholderUsernameText = loginPage.placeholderUsername.getAttribute("placeholder");
         String placeholderPasswordText = loginPage.placeholderPassword.getAttribute("placeholder");
         Assert.assertEquals(Username, placeholderUsernameText);
         Assert.assertEquals(Password, placeholderPasswordText);
     }
+
 
     @When("user enters invalid credentials {string} and {string}")
     public void userEntersInvalidCredentialsAnd(String Username, String Password) {
@@ -266,6 +266,7 @@ public class Login_StepDefinitions {
         System.out.println("Hex code for color:" + c);
         Assert.assertEquals(expectedHexCode,c);
     }
+
 
 
 }
