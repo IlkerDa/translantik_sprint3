@@ -105,7 +105,8 @@ Feature: User account tests
       | driver        |
       | sales manager |
       | store manager |
-@ac09
+
+  @ac09
   Scenario: the copying of the text entered into the Password field
     Then user shouldn't copy the password
 
@@ -115,7 +116,21 @@ Feature: User account tests
     And user lands on "https://qa.translantik.com/user/reset-request" page
     Then user changed own password as "user4"
 
-    @ac11
-    Scenario: the "Remember me on this computer" link on the login page
-      When user sees "Remember me on this computer" link
-      Then the link should be clickable
+  @ac11
+  Scenario: the "Remember me on this computer" link on the login page
+    When user sees "Remember me on this computer" link
+    Then the link should be clickable
+
+  @ac12
+  Scenario Outline: login by using the ENTER button
+
+    When user enters a valid "<username>" into username placeholder
+    And user hits ENTER button after entering username
+    And user enters a valid "<password>" into password placeholder
+    And user hits ENTER button after entering password
+    Then user should land on Homepage "<pageTitle>"
+    Examples:
+      | username        | password    | pageTitle |
+      | user4           | UserUser123 | Dashboard |
+      #| storemanager54  | UserUser123 | Dashboard |
+      #| salesmanager104 | UserUser123 | Dashboard |

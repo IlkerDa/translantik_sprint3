@@ -218,6 +218,32 @@ public class Login_StepDefinitions {
         BrowserUtils.sleep(2);
         Assert.assertTrue(loginPage.rememberMeLink.isEnabled());
     }
+
+
+    @When("user enters a valid {string} into username placeholder")
+    public void userEntersAValidIntoUsernamePlaceholder(String username) {
+        loginPage.inputUsername.sendKeys(username);
+    }
+
+    @And("user hits ENTER button after entering username")
+    public void userHitsENTERButtonAfterEnteringUsername() {
+        // loginPage.inputUsername.sendKeys(Keys.ENTER);
+    }
+
+    @And("user enters a valid {string} into password placeholder")
+    public void userEntersAValidIntoPasswordPlaceholder(String password) {
+       // loginPage.inputPassword.sendKeys(password);
+    }
+
+    @And("user hits ENTER button after entering password")
+    public void userHitsENTERButtonAfterEnteringPassword() {
+        //loginPage.inputPassword.sendKeys(Keys.ENTER);
+    }
+
+    @Then("user should land on Homepage {string}")
+    public void userShouldLandOnHomepage(String expectedPageTitle) {
+        //BrowserUtils.verifyTitle(expectedPageTitle);
+    }
 }
 
 

@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
         glue = "com/cydeo/step_definitions",
         dryRun = false,
         publish = false,
-        tags = "@ac3"
+        tags = "@ac12"
 )
 public class CukesRunner {
 }
