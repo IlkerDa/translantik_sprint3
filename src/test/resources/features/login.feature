@@ -121,7 +121,7 @@ Feature: User account tests
     When user sees "Remember me on this computer" link
     Then the link should be clickable
 
-  @ac12
+  @ac12_1
   Scenario Outline: login by using the ENTER button
 
     When user enters a valid "<username>" into username placeholder
@@ -132,5 +132,24 @@ Feature: User account tests
     Examples:
       | username        | password    | pageTitle |
       | user4           | UserUser123 | Dashboard |
-      #| storemanager54  | UserUser123 | Dashboard |
-      #| salesmanager104 | UserUser123 | Dashboard |
+      | storemanager54  | UserUser123 | Dashboard |
+      | salesmanager104 | UserUser123 | Dashboard |
+
+    @ac12_2
+    Scenario Outline: login by using the TAB button
+
+      When user enters a valid "<username>" into username placeholder
+      And user hits TAB button after entering username
+      And user enters a valid "<password>" into password placeholder
+      And user hits ENTER button after entering password
+      Then user should land on Homepage "<pageTitle>"
+
+      Examples:
+        | username        | password    | pageTitle |
+        | user4           | UserUser123 | Dashboard |
+        | storemanager54  | UserUser123 | Dashboard |
+        | salesmanager104 | UserUser123 | Dashboard |
+
+      @ac13
+      Scenario: Validate background color of Log in button
+        Then hex code of the background color of the log in button should be "#0c84a3"

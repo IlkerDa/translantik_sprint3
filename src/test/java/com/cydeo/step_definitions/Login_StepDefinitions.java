@@ -13,6 +13,8 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.Color;
+
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
@@ -222,28 +224,50 @@ public class Login_StepDefinitions {
 
     @When("user enters a valid {string} into username placeholder")
     public void userEntersAValidIntoUsernamePlaceholder(String username) {
+        loginPage.inputUsername.click();
         loginPage.inputUsername.sendKeys(username);
+        BrowserUtils.sleep(2);
     }
 
     @And("user hits ENTER button after entering username")
     public void userHitsENTERButtonAfterEnteringUsername() {
-        // loginPage.inputUsername.sendKeys(Keys.ENTER);
+        loginPage.inputUsername.sendKeys(Keys.ENTER);
     }
 
     @And("user enters a valid {string} into password placeholder")
     public void userEntersAValidIntoPasswordPlaceholder(String password) {
-       // loginPage.inputPassword.sendKeys(password);
+        loginPage.inputPassword.sendKeys(password);
+        BrowserUtils.sleep(2);
     }
 
     @And("user hits ENTER button after entering password")
-    public void userHitsENTERButtonAfterEnteringPassword() {
-        //loginPage.inputPassword.sendKeys(Keys.ENTER);
+     public void userHitsENTERButtonAfterEnteringPassword() {
+        loginPage.inputPassword.sendKeys(Keys.ENTER);
+        BrowserUtils.sleep(5);
     }
 
     @Then("user should land on Homepage {string}")
     public void userShouldLandOnHomepage(String expectedPageTitle) {
-        //BrowserUtils.verifyTitle(expectedPageTitle);
+        BrowserUtils.verifyTitle(expectedPageTitle);
     }
+
+    @And("user hits TAB button after entering username")
+    public void userHitsTABButtonAfterEnteringUsername() {
+        loginPage.inputUsername.sendKeys(Keys.TAB);
+    }
+
+
+
+    @Then("hex code of the background color of the log in button should be {string}")
+    public void hexCodeOfTheBackgroundColorOfTheLogInButtonShouldBe(String expectedHexCode) {
+        String s = loginPage.loginButton.getCssValue("background-color");
+        String c = Color.fromString(s).asHex();
+        System.out.println("Color is :" + s);
+        System.out.println("Hex code for color:" + c);
+        Assert.assertEquals(expectedHexCode,c);
+    }
+
+
 }
 
 
