@@ -241,10 +241,7 @@ public class Login_StepDefinitions {
        BrowserUtils.clickWithJS(loginPage.rememberMeLink);
        BrowserUtils.sleep(5);
        boolean isClicked = BrowserUtils.isClicked(loginPage.rememberMeLink);
-       Assert.assertTrue(isClicked);;
-
-
-
+       Assert.assertTrue(isClicked);
     }
 
 

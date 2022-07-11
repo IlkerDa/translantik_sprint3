@@ -129,7 +129,7 @@ Feature: Default
       | salesmanager104 | UserUser123 | Dashboard |
 
   @TRN-1604
-  Scenario Outline: US001-AC12-TC14 (Ilker) Verify login by using TABbutton on the keyboard
+  Scenario Outline: US001-AC12-TC14 (Ilker) Verify login by using TAB button on the keyboard
     When user enters a valid "<username>" into username placeholder
     And user hits TAB button after entering username
     And user enters a valid "<password>" into password placeholder
