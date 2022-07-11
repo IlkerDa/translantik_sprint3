@@ -3,8 +3,11 @@ package com.cydeo.pages;
 import com.cydeo.utilities.ConfigurationReader;
 import com.cydeo.utilities.Driver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class LoginPage extends BasePage {
     public LoginPage(){
@@ -32,8 +35,23 @@ public class LoginPage extends BasePage {
     @FindBy(xpath = "//a[.='Forgot your password?']")
     public WebElement forgotPasswordLink;
 
-    @FindBy(className = "custom-checkbox__text")
+    @FindBy(css = ".custom-checkbox__text")
     public WebElement rememberMeLink;
+
+      
+    @FindBy(css = "div[class='loader-mask shown']")
+    @CacheLookup
+    protected WebElement loaderMask;
+
+    @FindBy(css = "#user-menu > a")
+    public WebElement userName;
+
+
+
+
+
+
+
 
 
 
@@ -56,6 +74,7 @@ public class LoginPage extends BasePage {
             inputPassword.sendKeys(ConfigurationReader.getProperty("store_manager_password"));
         }
         loginButton.click();
+        waitUntilLoaderScreenDisappear();
     }
 
     public void enteringValidCredentialsWithoutSubmitting(String userType){
@@ -69,11 +88,13 @@ public class LoginPage extends BasePage {
             inputUsername.sendKeys(ConfigurationReader.getProperty("store_manager_username"));
             inputPassword.sendKeys(ConfigurationReader.getProperty("store_manager_password"));
         }
+
     }
     public void login(String Username, String Password){
         inputUsername.sendKeys(Username);
         inputPassword.sendKeys(Password);
         loginButton.click();
+        waitUntilLoaderScreenDisappear();
     }
 
     public void loginWithLeadingAndTrailingSpacesUsername(String userType) {
@@ -89,6 +110,16 @@ public class LoginPage extends BasePage {
             inputPassword.sendKeys(ConfigurationReader.getProperty("store_manager_password"));
         }
         loginButton.click();
+        waitUntilLoaderScreenDisappear();
     }
 
+    public void waitUntilLoaderScreenDisappear() {
+        try {
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 5);
+            wait.until(ExpectedConditions.invisibilityOf(loaderMask));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }

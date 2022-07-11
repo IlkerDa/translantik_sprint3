@@ -10,6 +10,6 @@ public class ForgotPasswordPage extends BasePage{
     @FindBy(xpath = "//button[@type='submit']")
     public WebElement requestButton;
 
-    @FindBy(className = "alert_alert-error")
+    @FindBy(xpath = "//div[@class='alert alert-warn']")
     public WebElement alertMessage;
 }

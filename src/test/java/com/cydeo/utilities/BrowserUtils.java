@@ -329,6 +329,17 @@ for given duration
         }
     }
 
+    public static boolean isClicked(WebElement element)
+    {
+        try {
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 5);
+            wait.until(ExpectedConditions.elementToBeClickable(element));
+            element.click();
+            return true;
+        } catch(Exception e){
+            return false;
+        }
+    }
 
     /**
      * Clicks on an element using JavaScript

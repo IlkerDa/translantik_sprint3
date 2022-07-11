@@ -1,5 +1,6 @@
 package com.cydeo.step_definitions;
 
+import com.cydeo.pages.BasePage;
 import com.cydeo.pages.ForgotPasswordPage;
 import com.cydeo.pages.HomePage;
 import com.cydeo.pages.LoginPage;
@@ -12,19 +13,24 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.Color;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Login_StepDefinitions {
     LoginPage loginPage = new LoginPage();
     HomePage homePage = new HomePage();
     ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage();
+    WebDriverWait wait = new WebDriverWait(Driver.getDriver(), 10);
 
 
     @Given("user is on the login page")
@@ -35,7 +41,7 @@ public class Login_StepDefinitions {
     @When("user enters valid credentials for {string}")
     public void user_enters_valid_credentials_for(String userType) {
         loginPage.login(userType);
-        BrowserUtils.waitForPageToLoad(5);
+
     }
 
     @And("user lands on {string}")
@@ -55,16 +61,18 @@ public class Login_StepDefinitions {
 
     @And("user copies current URL and log out and paste the same URL to the browser")
     public void theUserCopiesCurrentURLAndLogOutAndPasteTheSameURLToTheBrowser() {
+        BrowserUtils.waitFor(2);
         String urlAfterLogin = Driver.getDriver().getCurrentUrl();
-        homePage.logut();
-        BrowserUtils.waitForPageToLoad(5);
+        BrowserUtils.waitFor(2);
+        homePage.logout();
+        BrowserUtils.waitFor(2);
         Driver.getDriver().get(urlAfterLogin);
-        BrowserUtils.waitForPageToLoad(5);
     }
 
     @Then("system shouldn't allow users to access the application")
     public void systemShouldnTAllowUsersToAccessTheApplication() {
         String expectedURL = ConfigurationReader.getProperty("url");
+        BrowserUtils.sleep(2);
         String actualURL = Driver.getDriver().getCurrentUrl();
         Assert.assertEquals(expectedURL, actualURL);
     }
@@ -90,6 +98,15 @@ public class Login_StepDefinitions {
     @And("user opens a new empty tab and pastes the previous url")
     public void userOpensANewEmptyTabAndPastesThePreviousUrl() {
 
+        //Open new tab
+        JavascriptExecutor js = (JavascriptExecutor) Driver.getDriver();
+        js.executeScript("window.open();");
+
+        //handling multiple tabs with an ArrayList
+        ArrayList<String> windowHandles = new ArrayList<>(Driver.getDriver().getWindowHandles());
+        Driver.getDriver().switchTo().window(windowHandles.get(0));
+        Driver.getDriver().close();
+        Driver.getDriver().switchTo().window(windowHandles.get(1));
         Driver.getDriver().get(getTheCurrentUrl());
     }
 
@@ -120,6 +137,8 @@ public class Login_StepDefinitions {
         String placeholderPasswordText = loginPage.placeholderPassword.getAttribute("placeholder");
         Assert.assertEquals(Username, placeholderUsernameText);
         Assert.assertEquals(Password, placeholderPasswordText);
+        Assert.assertTrue(loginPage.placeholderUsername.isDisplayed());
+        Assert.assertTrue(loginPage.placeholderPassword.isDisplayed());
     }
 
 
@@ -147,7 +166,7 @@ public class Login_StepDefinitions {
         String messageInInputBox = loginPage.placeholderUsername.getAttribute("validationMessage");
         String messageInPwdBox = loginPage.placeholderPassword.getAttribute("validationMessage");
         boolean isMessageDisplayed = (messageInPwdBox.equals(expectedMessage) || messageInPwdBox.equals(expectedMessage))
-                ||messageInInputBox.isEmpty()||messageInPwdBox.isEmpty();
+                || messageInInputBox.isEmpty() || messageInPwdBox.isEmpty();
         Assert.assertTrue(isMessageDisplayed);
     }
 
@@ -182,43 +201,50 @@ public class Login_StepDefinitions {
         loginPage.placeholderPassword.sendKeys(Keys.chord(Keys.CONTROL, "A"));
         loginPage.placeholderPassword.sendKeys(Keys.chord(Keys.CONTROL, "C"));
         String localClipboardData = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        System.out.println(localClipboardData);
         Assert.assertNotEquals("UserUser123", localClipboardData);
     }
 
     @When("user clicks Forgot your password link")
     public void userClicksForgotYourPasswordLink() {
         loginPage.forgotPasswordLink.click();
-        BrowserUtils.waitForVisibility(forgotPasswordPage.forgotPasswordBox,3);
+        BrowserUtils.waitForVisibility(forgotPasswordPage.forgotPasswordBox, 3);
     }
 
     @And("user lands on {string} page")
     public void userLandsOnPage(String expectedURL) {
-       String actualURL=Driver.getDriver().getCurrentUrl();
-       Assert.assertEquals(expectedURL,actualURL);
+        String actualURL = Driver.getDriver().getCurrentUrl();
+        Assert.assertEquals(expectedURL, actualURL);
     }
 
     @Then("user changed own password as {string}")
     public void userChangedOwnPasswordAs(String username) {
         forgotPasswordPage.forgotPasswordBox.sendKeys(username);
         forgotPasswordPage.requestButton.click();
-        Assert.assertNotNull(forgotPasswordPage.alertMessage);
+        BrowserUtils.waitFor(2);
+        String errorMessage1 = "Unable to send the email.";
+        String errorMessage2 = "There is no active user with username or email address";
+        String actualMessage = forgotPasswordPage.alertMessage.getText();
+        System.out.println(actualMessage);
+        Assert.assertTrue(!(actualMessage.contains(errorMessage1)||actualMessage.contains(errorMessage2)));
     }
-
-
-
-
     @When("user sees {string} link")
-    public void userSeesLink(String link) {
-        Assert.assertEquals(link, loginPage.rememberMeLink.getText());
-        System.out.println("loginPage.rememberMeLink.getText() = " + loginPage.rememberMeLink.getText());
+    public void userSeesLink(String expectedText) {
+        String actualText= loginPage.rememberMeLink.getText();
+        Assert.assertEquals(expectedText,actualText);
     }
+
+
 
     @Then("the link should be clickable")
     public void theLinkShouldBeClickable() {
-        BrowserUtils.sleep(2);
-        loginPage.rememberMeLink.click();
-        BrowserUtils.sleep(2);
-        Assert.assertTrue(loginPage.rememberMeLink.isEnabled());
+       BrowserUtils.clickWithJS(loginPage.rememberMeLink);
+       BrowserUtils.sleep(5);
+       boolean isClicked = BrowserUtils.isClicked(loginPage.rememberMeLink);
+       Assert.assertTrue(isClicked);;
+
+
+
     }
 
 
@@ -241,7 +267,7 @@ public class Login_StepDefinitions {
     }
 
     @And("user hits ENTER button after entering password")
-     public void userHitsENTERButtonAfterEnteringPassword() {
+    public void userHitsENTERButtonAfterEnteringPassword() {
         loginPage.inputPassword.sendKeys(Keys.ENTER);
         BrowserUtils.sleep(5);
     }
@@ -257,14 +283,13 @@ public class Login_StepDefinitions {
     }
 
 
-
     @Then("hex code of the background color of the log in button should be {string}")
     public void hexCodeOfTheBackgroundColorOfTheLogInButtonShouldBe(String expectedHexCode) {
         String s = loginPage.loginButton.getCssValue("background-color");
         String c = Color.fromString(s).asHex();
         System.out.println("Color is :" + s);
         System.out.println("Hex code for color:" + c);
-        Assert.assertEquals(expectedHexCode,c);
+        Assert.assertEquals(expectedHexCode, c);
     }
 
 
